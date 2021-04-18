@@ -5,10 +5,7 @@ import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 public class FindZodiacSign {
 
@@ -36,20 +33,29 @@ public class FindZodiacSign {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd");
         Date date = dateFormat.parse(dateString);
         System.out.println(date);
+
+        Calendar calendarDate = Calendar.getInstance();
+        Calendar calendarBegin = Calendar.getInstance();
+        Calendar calendarEnd = Calendar.getInstance();
+
         DateFormat dateFormat2 = new SimpleDateFormat("dd/MM");
 
         for (int index = 0; index < zodiacSigns.size(); index++) {
             Date begin = dateFormat2.parse(zodiacSigns.get(index).getStartDate());
             Date end = dateFormat2.parse(zodiacSigns.get(index).getEndDate());
 
-            if(begin.getMonth()==11 && end.getMonth()==0) {
-                end.setYear(end.getYear() + 1);
-                if(date.getMonth()==0)
-                    date.setYear(date.getYear()+1);
-                System.out.println(date);
+            calendarBegin.setTime(begin);
+            calendarEnd.setTime(end);
+            calendarDate.setTime(date);
+
+            if(calendarBegin.get(Calendar.MONTH)==11 && calendarEnd.get(Calendar.MONTH)==0) {
+                calendarEnd.set(Calendar.YEAR, calendarEnd.get(Calendar.YEAR)+1);
+                if(calendarDate.get(Calendar.MONTH)==0)
+                    calendarDate.set(Calendar.YEAR, calendarDate.get(Calendar.YEAR)+1);
             }
 
-            if (date.after(begin) && date.before(end) || date.equals(begin) || date.equals(end)) {
+            if (calendarDate.after(calendarBegin) && calendarDate.before(calendarEnd) ||
+                    calendarDate.equals(calendarBegin) || calendarDate.equals(calendarEnd)) {
                 return zodiacSigns.get(index).getSign();
             }
         }
