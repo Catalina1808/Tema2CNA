@@ -32,7 +32,6 @@ public class FindZodiacSign {
     public String findZodiac(String dateString, ArrayList<ZodiacSign> zodiacSigns) throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd");
         Date date = dateFormat.parse(dateString);
-        System.out.println(date);
 
         Calendar calendarDate = Calendar.getInstance();
         Calendar calendarBegin = Calendar.getInstance();

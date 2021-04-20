@@ -19,13 +19,7 @@ public class Main {
             dateFormat.setLenient(false);
             dateFormat.parse(date);
             return true;
-        } catch (InputMismatchException e) {
-            System.out.println(e);
-            return false;
-        } catch (ParseException e) {
-            System.out.println(e);
-            return false;
-        } catch (DateTimeException e) {
+        } catch (InputMismatchException | ParseException | DateTimeException e) {
             System.out.println(e);
             return false;
         }
@@ -33,7 +27,8 @@ public class Main {
     public static void main(String[] args) {
 
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8999).usePlaintext().build();
-        GateGrpc.GateStub gateStub = GateGrpc.newStub(channel);
+      //  GateGrpc.GateStub gateStub = GateGrpc.newStub(channel);
+        GateGrpc.GateBlockingStub gateStub = GateGrpc.newBlockingStub(channel);
 
         System.out.println("MENU");
         System.out.println("1. Get zodiac sign.");
@@ -51,24 +46,8 @@ public class Main {
                     String date = read.next();
 
                     if (verify(date)) {
-                        gateStub.getZodiacSign(GateOuterClass.DateRequest.newBuilder().setDate(date).build(), new StreamObserver<GateOuterClass.SignResponse>() {
-
-                            @Override
-                            public void onNext(GateOuterClass.SignResponse signResponse) {
-                                System.out.println(signResponse);
-
-                            }
-
-                            @Override
-                            public void onError(Throwable throwable) {
-                                System.out.println("Error : " + throwable.getMessage());
-                            }
-
-                            @Override
-                            public void onCompleted() {
-                            }
-
-                        });
+                        GateOuterClass.SignResponse response=gateStub.getZodiacSign(GateOuterClass.DateRequest.newBuilder().setDate(date).build());
+                        System.out.println(response.getSign());
                     }
                     else
                         System.out.println("Invalid date!");
